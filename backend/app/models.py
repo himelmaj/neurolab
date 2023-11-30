@@ -41,10 +41,7 @@ class RelStuTutTyp(Base):
 
 Student.tutors_relation = relationship("RelStuTutTyp", back_populates="student")
 
-# En la clase Tutors
 Tutors.students_relation = relationship("RelStuTutTyp", back_populates="tutors")
-
-# En la clase TypeRelationTutorStudent
 TypeRelationTutorStudent.rel_stu_tut_typ = relationship("RelStuTutTyp", back_populates="type_relation_tutor_student")
 
 # class Student(Base):
