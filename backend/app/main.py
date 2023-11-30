@@ -1,14 +1,3 @@
-# from fastapi import FastAPI
-# from database import ping_database
-
-
-
-# @app.get("/ping")
-# async def root():
-#     return {"message": "Ping Success!"}
-
-
-
 from database import SessionLocal, engine
 from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
