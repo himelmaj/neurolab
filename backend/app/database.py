@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine(config('DATABASE_MARIADB'))
+engine = create_engine(config('DATABASE_TEST2'))
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
