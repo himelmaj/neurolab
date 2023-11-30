@@ -1,6 +1,9 @@
-from sqlalchemy.orm import Session
-from . import models, schemas
+from fastapi import APIRouter, Body
+from database import get_students
 
-def add_student(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    students = db.add(models.Student).offset(skip).limit(limit).all()
+router = APIRouter()
+
+@router.get("/students/")
+async def read_students(skip: int = 0, limit: int = 10):
+    students = await get_students(skip, limit)
     return students
