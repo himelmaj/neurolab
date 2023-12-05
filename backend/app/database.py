@@ -21,6 +21,6 @@ def get_db():
         db.close()
         
 
-async def get_students(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    students = await db.query(models.Student).offset(skip).limit(limit).all()
+def get_students(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+    students = db.query(models.Student).offset(skip).limit(limit).all()
     return students
