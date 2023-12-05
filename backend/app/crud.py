@@ -30,17 +30,17 @@ def read_tutors(tutor_id: int, db: Session = Depends(get_db)):
     tutors = db.query( Tutors).filter( Tutors.id_tutor == tutor_id).first()
     return tutors
 
-@router.get("/typerelationtutorstudent/")
+@router.get("/types-relations-tutors-students/")
 def read_typerelationtutorstudent(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     type_relation_tutor_student = db.query( TypeRelationTutorStudent).offset(skip).limit(limit).all()
     return type_relation_tutor_student
 
-@router.get("/typerelationtutorstudent/{relation_type}")
+@router.get("/type-relation-tutor-student/{relation_type}")
 def read_typerelationtutorstudent(relation_type: int, db: Session = Depends(get_db)):
     type_relation_tutor_student = db.query( TypeRelationTutorStudent).filter( TypeRelationTutorStudent.id_relation == relation_type).first()
     return type_relation_tutor_student
 
-@router.get("/relstututtyp/")
+@router.get("/rel-stu-tut-typ/")
 def read_relstututtyp(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     rel_stu_tut_typ = db.query(RelStuTutTyp).offset(skip).limit(limit).all()
     result = []
@@ -48,6 +48,6 @@ def read_relstututtyp(skip: int = 0, limit: int = 10, db: Session = Depends(get_
         result.append({
             "id_student": f'http://127.0.0.1:8000/student/{url.id_student}',
             "id_tutor": f'http://127.0.0.1:8000/tutor/{url.id_tutor}',
-            "id_relation": f'http://127.0.0.1:8000/typerelationtutorstudent/{url.id_relation}',
+            "id_relation": f'http://127.0.0.1:8000/type-relation-tutor-student/{url.id_relation}',
         })
     return result
