@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from database import get_db, Session
-from models import Student, Tutors, TypeRelationTutorStudent, RelStuTutTyp
+from models import Student, Tutors, TypeRelationTutorStudent, RelStuTutTyp, Addressess
 
 router = APIRouter()
 
@@ -72,3 +72,8 @@ def read_relstututtyp(skip: int = 0, limit: int = 10, db: Session = Depends(get_
             "Relation": db.query(TypeRelationTutorStudent).filter(TypeRelationTutorStudent.id_relation == rel.id_relation).first(),
         })
     return result
+
+@router.get("/addressess/")
+def read_addressess(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+    addressess = db.query(Addressess).offset(skip).limit(limit).all()
+    return addressess
