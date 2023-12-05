@@ -5,7 +5,7 @@ export function Navigation() {
     return (
         <nav>
             <p>
-                <Link to="/">Login</Link>
+                <Link to="/login">Login</Link>
             </p>
         </nav>
     );
