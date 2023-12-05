@@ -14,4 +14,3 @@ def get_db() -> Session:
         return db
     finally:
         db.close()
-        db.close()
