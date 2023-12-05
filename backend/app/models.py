@@ -44,6 +44,25 @@ Student.tutors_relation = relationship("RelStuTutTyp", back_populates="student")
 Tutors.students_relation = relationship("RelStuTutTyp", back_populates="tutors")
 TypeRelationTutorStudent.rel_stu_tut_typ = relationship("RelStuTutTyp", back_populates="type_relation_tutor_student")
 
+
+class Addresses(Base):
+    __tablename__ = "addresses"
+    id_address = Column(INTEGER, primary_key=True, index=True, autoincrement=True, nullable=False)
+    public_road = Column(VARCHAR(50), nullable=False)
+    address_number = Column(VARCHAR(50), nullable=True)
+    cp = Column(INTEGER(5), nullable=False)
+    municipality = Column(VARCHAR(35), nullable=False)
+    province = Column(VARCHAR(35), nullable=False)
+    country = Column(VARCHAR(35), nullable=False)
+    
+class Rel_Address_Student(Base):
+    __tablename__ = "rel_address_student"
+    id_student = Column(INTEGER, ForeignKey('students.id_student'), primary_key=True, index=True, nullable=False)
+    id_address = Column(INTEGER, ForeignKey('addresses.id_address'), primary_key=True, index=True, nullable=False)
+    
+    student = relationship("Student")
+    addresses = relationship("Addresses")
+
 # class Student(Base):
 #     __tablename__ = "students"
 #     id_student = Column(
