@@ -23,9 +23,13 @@ def read_student(student_id: int, db: Session = Depends(get_db)):
     result.append(student)
     relations = db.query(RelStuTutTyp).filter(
         RelStuTutTyp.id_student == student_id).all()
-    for rel in relations:
-        tutors.append(db.query(Tutors).filter(
-            Tutors.id_tutor == rel.id_tutor).first())
+    
+    # for rel in relations:
+    #     tutors.append(db.query(Tutors).filter(Tutors.id_tutor == rel.id_tutor).first())
+    
+    tutor_ids = [x.id_tutor for x in relations]
+    tutors = db.query(Tutors).filter(Tutors.id_tutor.in_(tutor_ids)).all()
+ 
     result.append(tutors)
     return result
 
