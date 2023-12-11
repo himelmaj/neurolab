@@ -40,7 +40,6 @@ class RelStuTutTyp(Base):
     type_relation_tutor_student = relationship("TypeRelationTutorStudent")
 
 Student.tutors_relation = relationship("RelStuTutTyp", back_populates="student")
-
 Tutors.students_relation = relationship("RelStuTutTyp", back_populates="tutors")
 TypeRelationTutorStudent.rel_stu_tut_typ = relationship("RelStuTutTyp", back_populates="type_relation_tutor_student")
 
@@ -61,7 +60,11 @@ class Rel_Address_Student(Base):
     id_address = Column(INTEGER, ForeignKey('addressess.id_address'), primary_key=True, index=True, nullable=False)
     
     student = relationship("Student")
-    addresses = relationship("Addresses")
+    addressess = relationship("Addressess")
+    
+Student.addresses = relationship("Rel_Address_Student", back_populates="student")
+Addressess.students = relationship("Rel_Address_Student", back_populates="addressess")
+    
 
 # class Student(Base):
 #     __tablename__ = "students"
