@@ -16,17 +16,25 @@ def read_students(skip: int = 0, limit: int = 10, db: Session = Depends(get_db))
     return students
 
 
-@router.get("/students/")
-def read_students(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    students = db.query(Student).offset(skip).limit(limit).all()
-    return students
+# @router.get("/students/")
+# def read_students(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+#     students = db.query(Student).offset(skip).limit(limit).all()
+#     return students
 
 
 @router.get("/student/{student_id}")
 def read_student(student_id: int, db: Session = Depends(get_db)):
+    tutors, result = [], []
     student = db.query(Student).filter(
         Student.id_student == student_id).first()
-    return student
+    result.append(student)
+    relations = db.query(RelStuTutTyp).filter(
+        RelStuTutTyp.id_student == student_id).all()
+    for rel in relations:
+        tutors.append(db.query(Tutors).filter(
+            Tutors.id_tutor == rel.id_tutor).first())
+    result.append(tutors)
+    return result
 
 
 @router.get("/tutors/")
@@ -77,14 +85,15 @@ def read_addressess(skip: int = 0, limit: int = 10, db: Session = Depends(get_db
 
 @router.get("/rel-address-student")
 def read_rel_address_student(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    addressess_rel = db.query(Rel_Address_Student).offset(skip).limit(limit).all()
+    addressess_rel = db.query(Rel_Address_Student).offset(
+        skip).limit(limit).all()
     result = []
     for address in addressess_rel:
         result.append(
             {
                 "Student": {
-                    "data": db.query(Student).filter(Student.id_student == address.id_student).first(), 
+                    "data": db.query(Student).filter(Student.id_student == address.id_student).first(),
                     "address": db.query(Addressess).filter(Addressess.id_address == address.id_address).first()
-            }
+                }
             })
     return result
