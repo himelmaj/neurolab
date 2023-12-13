@@ -19,51 +19,52 @@ class Student(Base):
 class Tutors(Base):
     __tablename__ = "tutors"
     id_tutor = Column(INTEGER, primary_key=True, index=True, autoincrement=True, nullable=False)
+    id_relation = Column(INTEGER, ForeignKey('type_relation_tutor_student.id_relation'), index=True, nullable=False)
     first_name = Column(VARCHAR(30), nullable=False)
     last_name = Column(VARCHAR(30), nullable=False)
     phone = Column(VARCHAR(15), nullable=False)
     email = Column(VARCHAR(50), nullable=False)
+    
+    type_relation_tutor_student = relationship("TypeRelationTutorStudent")
     
 class TypeRelationTutorStudent(Base):
     __tablename__ = "type_relation_tutor_student"
     id_relation = Column(INTEGER, primary_key=True, index=True, autoincrement=True, nullable=False)
     relation_type = Column(VARCHAR(50), nullable=False)
 
-class RelStuTutTyp(Base):
-    __tablename__ = "rel_stu_tut_typ"
+class RelStudentTutors(Base):
+    __tablename__ = "rel_students_tutors"
     id_student = Column(INTEGER, ForeignKey('students.id_student'), primary_key=True, index=True, nullable=False)
     id_tutor = Column(INTEGER, ForeignKey('tutors.id_tutor'), primary_key=True, index=True, nullable=False)
-    id_relation = Column(INTEGER, ForeignKey('type_relation_tutor_student.id_relation'), primary_key=True, index=True, nullable=False)
     
     student = relationship("Student")
     tutors = relationship("Tutors")
-    type_relation_tutor_student = relationship("TypeRelationTutorStudent")
 
-Student.tutors_relation = relationship("RelStuTutTyp", back_populates="student")
-Tutors.students_relation = relationship("RelStuTutTyp", back_populates="tutors")
-TypeRelationTutorStudent.rel_stu_tut_typ = relationship("RelStuTutTyp", back_populates="type_relation_tutor_student")
+Student.tutors_relation = relationship("RelStudentTutors", back_populates="student")
+Tutors.students_relation = relationship("RelStudentTutors", back_populates="tutors")
 
 
-class Addressess(Base):
-    __tablename__ = "addressess"
-    id_address = Column(INTEGER, primary_key=True, index=True, autoincrement=True, nullable=False)
-    public_road = Column(VARCHAR(50), nullable=False)
-    address_number = Column(VARCHAR(50), nullable=True)
-    cp = Column(INTEGER(5), nullable=False)
-    municipality = Column(VARCHAR(35), nullable=False)
-    province = Column(VARCHAR(35), nullable=False)
-    country = Column(VARCHAR(35), nullable=False)
+
+# class Addressess(Base):
+#     __tablename__ = "addressess"
+#     id_address = Column(INTEGER, primary_key=True, index=True, autoincrement=True, nullable=False)
+#     public_road = Column(VARCHAR(50), nullable=False)
+#     address_number = Column(VARCHAR(50), nullable=True)
+#     cp = Column(INTEGER(5), nullable=False)
+#     municipality = Column(VARCHAR(35), nullable=False)
+#     province = Column(VARCHAR(35), nullable=False)
+#     country = Column(VARCHAR(35), nullable=False)
     
-class Rel_Address_Student(Base):
-    __tablename__ = "rel_address_student"
-    id_student = Column(INTEGER, ForeignKey('students.id_student'), primary_key=True, index=True, nullable=False)
-    id_address = Column(INTEGER, ForeignKey('addressess.id_address'), primary_key=True, index=True, nullable=False)
+# class Rel_Address_Student(Base):
+#     __tablename__ = "rel_address_student"
+#     id_student = Column(INTEGER, ForeignKey('students.id_student'), primary_key=True, index=True, nullable=False)
+#     id_address = Column(INTEGER, ForeignKey('addressess.id_address'), primary_key=True, index=True, nullable=False)
     
-    student = relationship("Student")
-    addressess = relationship("Addressess")
+#     student = relationship("Student")
+#     addressess = relationship("Addressess")
     
-Student.addresses = relationship("Rel_Address_Student", back_populates="student")
-Addressess.students = relationship("Rel_Address_Student", back_populates="addressess")
+# Student.addresses = relationship("Rel_Address_Student", back_populates="student")
+# Addressess.students = relationship("Rel_Address_Student", back_populates="addressess")
     
 
 # class Student(Base):
