@@ -18,7 +18,7 @@ def read_students(skip: int = 0, limit: int = 10, db: Session = Depends(get_db))
 
 @router.get("/student/{student_id}")
 def read_student(student_id: int, db: Session = Depends(get_db)):
-    tutors, result = [], []
+    result = []
     student = db.query(Student).filter(Student.id_student == student_id).first()
     result.append(student)
     relations = db.query(RelStuTutTyp).filter(RelStuTutTyp.id_student == student_id).all()
@@ -29,33 +29,11 @@ def read_student(student_id: int, db: Session = Depends(get_db)):
     tutors = db.query(Tutors).filter(Tutors.id_tutor.in_(tutor_ids)).all()
     type_relations = db.query(TypeRelationTutorStudent).filter(TypeRelationTutorStudent.id_relation.in_(type_tutor_ids)).all()
     
-    
-    
-    
     tutors_list = []
-    
-    
-    
-    # for t in tutors:
-    #     tutors_list.append({db.query(RelStuTutTyp).filter(TypeRelationTutorStudent.id_relation == t.id_tutor).first(): t})
 
 
     result.append(tutors_list)
 
-
-
-
-    # tutors = db.query(Tutors).filter(Tutors.id_tutor.in_(tutor_ids)).all()
-    # type_relations = db.query(TypeRelationTutorStudent).filter(
-    #     TypeRelationTutorStudent.id_relation.in_(type_tutor_ids)).all()
-    # result.append(tutors)
-
-    # for t_rel in type_relations:
-    #     result.append(t_rel.relation_type)
-    #     result.t_rel.append
-
-    # for t_rel in type_relations:
-    #     t_rel
     return result
 
 
