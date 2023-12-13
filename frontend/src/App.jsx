@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navigation } from "./components/Navigation";
 import { HomePage } from "./pages/HomePage"
 import { LoginPage } from "./pages/LoginPage";
-import './App.css'
 
 function App() {
 
