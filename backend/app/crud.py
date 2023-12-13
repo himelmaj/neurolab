@@ -7,7 +7,7 @@ router = APIRouter()
 
 @router.get("/")
 def read_root():
-    return {"students": "http://localhost:8000/students/", "tutors": "http://localhost:8000/tutors/", "types-relations-tutors-students": "http://localhost:8000/types-relations-tutors-students/", "rel-stu-tut-typ": "http://localhost:8000/rel-stu-tut-typ/", "addressess": "http://localhost:8000/addressess/", "rel-address-student": "http://localhost:8000/rel-address-student/"}
+    return {"Hello": "World"}
 
 
 @router.get("/students/")
@@ -22,6 +22,10 @@ def read_student(student_id: int, db: Session = Depends(get_db)):
     result = {}
 
     student = db.query(Student).filter(Student.id_student == student_id).first()
+    
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
     result["student"] = student
 
     relations = db.query(RelStudentTutors).filter(RelStudentTutors.id_student == student_id).all()
