@@ -1,12 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 export function Navigation() {
-    return (
-        <nav>
-            <p>
-                <Link to="/login">Login</Link>
-            </p>
-        </nav>
-    );
-};
+  return (
+    <nav>
+      <Link to="/login">Login</Link>
+    </nav>
+  );
+}
