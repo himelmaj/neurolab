@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from database import get_db, Session
-from models import Student, Tutors, TypeRelationTutorStudent, RelStuTutTyp, Addressess, Rel_Address_Student
+from models import Student, Tutors, TypeRelationTutorStudent, RelStudentTutors
 
 router = APIRouter()
 
@@ -18,44 +18,28 @@ def read_students(skip: int = 0, limit: int = 10, db: Session = Depends(get_db))
 
 @router.get("/student/{student_id}")
 def read_student(student_id: int, db: Session = Depends(get_db)):
-    tutors, result = [], []
+    
+    result = {}
+
     student = db.query(Student).filter(Student.id_student == student_id).first()
-    result.append(student)
-    relations = db.query(RelStuTutTyp).filter(RelStuTutTyp.id_student == student_id).all()
+    result["student"] = student
 
-    tutor_ids = [x.id_tutor for x in relations]
-    type_tutor_ids = [x.id_relation for x in relations]
+    relations = db.query(RelStudentTutors).filter(RelStudentTutors.id_student == student_id).all()
+    id_tutors = [rel.id_tutor for rel in relations]
 
-    tutors = db.query(Tutors).filter(Tutors.id_tutor.in_(tutor_ids)).all()
-    type_relations = db.query(TypeRelationTutorStudent).filter(TypeRelationTutorStudent.id_relation.in_(type_tutor_ids)).all()
+    tutors_list = db.query(Tutors).filter(Tutors.id_tutor.in_(id_tutors)).all()
+
+    tutors_by_relation = {}
     
-    
-    
-    
-    tutors_list = []
-    
-    
-    
-    # for t in tutors:
-    #     tutors_list.append({db.query(RelStuTutTyp).filter(TypeRelationTutorStudent.id_relation == t.id_tutor).first(): t})
+    for tutor in tutors_list:
+        relation = db.query(TypeRelationTutorStudent).filter(TypeRelationTutorStudent.id_relation == tutor.id_relation).first()
+        relation_type = relation.relation_type
+        if relation_type not in tutors_by_relation:
+            tutors_by_relation[relation_type] = []
+        tutors_by_relation[relation_type].append(tutor)
 
+    result["tutors"] = tutors_by_relation
 
-    result.append(tutors_list)
-
-
-
-
-    # tutors = db.query(Tutors).filter(Tutors.id_tutor.in_(tutor_ids)).all()
-    # type_relations = db.query(TypeRelationTutorStudent).filter(
-    #     TypeRelationTutorStudent.id_relation.in_(type_tutor_ids)).all()
-    # result.append(tutors)
-
-    # for t_rel in type_relations:
-    #     result.append(t_rel.relation_type)
-    #     result.t_rel.append
-
-    # for t_rel in type_relations:
-    #     t_rel
     return result
 
 
@@ -71,51 +55,51 @@ def read_tutors(tutor_id: int, db: Session = Depends(get_db)):
     return tutors
 
 
-@router.get("/types-relations-tutors-students/")
-def read_typerelationtutorstudent(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    type_relation_tutor_student = db.query(
-        TypeRelationTutorStudent).offset(skip).limit(limit).all()
-    return type_relation_tutor_student
+# @router.get("/types-relations-tutors-students/")
+# def read_typerelationtutorstudent(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+#     type_relation_tutor_student = db.query(
+#         TypeRelationTutorStudent).offset(skip).limit(limit).all()
+#     return type_relation_tutor_student
 
 
-@router.get("/type-relation-tutor-student/{relation_type}")
-def read_typerelationtutorstudent(relation_type: int, db: Session = Depends(get_db)):
-    type_relation_tutor_student = db.query(TypeRelationTutorStudent).filter(
-        TypeRelationTutorStudent.id_relation == relation_type).first()
-    return type_relation_tutor_student
+# @router.get("/type-relation-tutor-student/{relation_type}")
+# def read_typerelationtutorstudent(relation_type: int, db: Session = Depends(get_db)):
+#     type_relation_tutor_student = db.query(TypeRelationTutorStudent).filter(
+#         TypeRelationTutorStudent.id_relation == relation_type).first()
+#     return type_relation_tutor_student
 
 
-@router.get("/rel-stu-tut-typ/")
-def read_rel_stu_tut_typ(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    rel_stu_tut_typ = db.query(RelStuTutTyp).offset(skip).limit(limit).all()
-    result = []
-    for rel in rel_stu_tut_typ:
-        result.append({
-            "Student": {"data": db.query(Student).filter(Student.id_student == rel.id_student).first(), "url": f'http://127.0.0.1:8000/student/{rel.id_student}'},
-            "Tutor": {
-                "data": db.query(Tutors).filter(Tutors.id_tutor == rel.id_tutor).first(), "url": f'http://127.0.0.1:8000/tutor/{rel.id_tutor}', },
-            "Relation": db.query(TypeRelationTutorStudent).filter(TypeRelationTutorStudent.id_relation == rel.id_relation).first(),
-        })
-    return result
+# @router.get("/rel-stu-tut-typ/")
+# def read_rel_stu_tut_typ(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+#     rel_stu_tut_typ = db.query(RelStuTutTyp).offset(skip).limit(limit).all()
+#     result = []
+#     for rel in rel_stu_tut_typ:
+#         result.append({
+#             "Student": {"data": db.query(Student).filter(Student.id_student == rel.id_student).first(), "url": f'http://127.0.0.1:8000/student/{rel.id_student}'},
+#             "Tutor": {
+#                 "data": db.query(Tutors).filter(Tutors.id_tutor == rel.id_tutor).first(), "url": f'http://127.0.0.1:8000/tutor/{rel.id_tutor}', },
+#             "Relation": db.query(TypeRelationTutorStudent).filter(TypeRelationTutorStudent.id_relation == rel.id_relation).first(),
+#         })
+#     return result
 
 
-@router.get("/addressess/")
-def read_addressess(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    addressess = db.query(Addressess).offset(skip).limit(limit).all()
-    return addressess
+# @router.get("/addressess/")
+# def read_addressess(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+#     addressess = db.query(Addressess).offset(skip).limit(limit).all()
+#     return addressess
 
 
-@router.get("/rel-address-student")
-def read_rel_address_student(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    addressess_rel = db.query(Rel_Address_Student).offset(
-        skip).limit(limit).all()
-    result = []
-    for address in addressess_rel:
-        result.append(
-            {
-                "Student": {
-                    "data": db.query(Student).filter(Student.id_student == address.id_student).first(),
-                    "address": db.query(Addressess).filter(Addressess.id_address == address.id_address).first()
-                }
-            })
-    return result
+# @router.get("/rel-address-student")
+# def read_rel_address_student(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+#     addressess_rel = db.query(Rel_Address_Student).offset(
+#         skip).limit(limit).all()
+#     result = []
+#     for address in addressess_rel:
+#         result.append(
+#             {
+#                 "Student": {
+#                     "data": db.query(Student).filter(Student.id_student == address.id_student).first(),
+#                     "address": db.query(Addressess).filter(Addressess.id_address == address.id_address).first()
+#                 }
+#             })
+#     return result
