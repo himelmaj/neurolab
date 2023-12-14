@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@300&family=K2D:wght@300;500&family=Montserrat:wght@200&display=swap");
+
+button {
+  margin: auto;
+  margin-top: 50px;
+  color: black;
+  background-color: white;
+  font-size: 26px;
+  font-family: 'K2D', sans-serif;
+  font-weight: 700;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 70px;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 70px;
+  width: 150px;
+  height: 40px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  --input-focus: lightdark;
+  --font-color: #323232;
+  --font-color-sub: #666;
+  --bg-color: #fff;
+  --main-color: #fff;
+  /* border-radius: 5px; */
+  border: 2px solid var(--main-color);
+  box-shadow: 4px 4px var(--main-color);
+  cursor: pointer;
+}
+
+button:active {
+  box-shadow: 0px 0px var(--main-color);
+  transform: translate(3px, 3px);
+}
+
+.help__btn{
+    margin-right: 20px !important;
+    position: absolute;
+    right: 20px;
+    top: 30px;
+    box-shadow: 4px 4px #a5a5a5;
+    border: 2px solid #a5a5a5;
+}
