@@ -37,9 +37,13 @@ def read_student(student_id: int, db: Session = Depends(get_db)):
     
     for tutor in tutors_list:
         relation = db.query(TypeRelationTutorStudent).filter(TypeRelationTutorStudent.id_relation == tutor.id_relation).first()
+        
         relation_type = relation.relation_type
+        
         if relation_type not in tutors_by_relation:
+            
             tutors_by_relation[relation_type] = []
+            
         tutors_by_relation[relation_type].append(tutor)
 
     result["tutors"] = tutors_by_relation
