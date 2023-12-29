@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Date, Integer, String, ForeignKey
 from sqlalchemy.dialects.mysql import INTEGER, TINYINT, VARCHAR, DATE, DATETIME, LONGTEXT, BOOLEAN
 from sqlalchemy.orm import relationship
-from database import Base
+from app.database import Base
 
 
 class Student(Base):

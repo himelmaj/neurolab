@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
-from database import get_db, Session
-from models import Student, Tutors, TypeRelationTutorStudent, RelStudentTutors
+from app.database import get_db, Session
+from app.models import Student, Tutors, TypeRelationTutorStudent, RelStudentTutors
 
 router = APIRouter()
 
