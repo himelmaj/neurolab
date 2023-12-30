@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.database import get_db, Session
-from app.models import Student, Tutors, TypeRelationTutorStudent, RelStudentTutors
+# from app.models import Student, Tutors, TypeRelationTutorStudent, RelStudentTutors
 
 router = APIRouter()
 
@@ -10,57 +10,57 @@ def read_root():
     return {"Hello": "World"}
 
 
-@router.get("/students/")
-def read_students(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    students = db.query(Student).offset(skip).limit(limit).all()
-    return students
+# @router.get("/students/")
+# def read_students(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+#     students = db.query(Student).offset(skip).limit(limit).all()
+#     return students
 
 
-@router.get("/student/{student_id}")
-def read_student(student_id: int, db: Session = Depends(get_db)):
+# @router.get("/student/{student_id}")
+# def read_student(student_id: int, db: Session = Depends(get_db)):
     
-    result = {}
+#     result = {}
 
-    student = db.query(Student).filter(Student.id_student == student_id).first()
+#     student = db.query(Student).filter(Student.id_student == student_id).first()
     
-    if not student:
-        raise HTTPException(status_code=404, detail="Student not found")
+#     if not student:
+#         raise HTTPException(status_code=404, detail="Student not found")
     
-    result["student"] = student
+#     result["student"] = student
 
-    relations = db.query(RelStudentTutors).filter(RelStudentTutors.id_student == student_id).all()
-    id_tutors = [rel.id_tutor for rel in relations]
+#     relations = db.query(RelStudentTutors).filter(RelStudentTutors.id_student == student_id).all()
+#     id_tutors = [rel.id_tutor for rel in relations]
 
-    tutors_list = db.query(Tutors).filter(Tutors.id_tutor.in_(id_tutors)).all()
+#     tutors_list = db.query(Tutors).filter(Tutors.id_tutor.in_(id_tutors)).all()
 
-    tutors_by_relation = {}
+#     tutors_by_relation = {}
     
-    for tutor in tutors_list:
-        relation = db.query(TypeRelationTutorStudent).filter(TypeRelationTutorStudent.id_relation == tutor.id_relation).first()
+#     for tutor in tutors_list:
+#         relation = db.query(TypeRelationTutorStudent).filter(TypeRelationTutorStudent.id_relation == tutor.id_relation).first()
         
-        relation_type = relation.relation_type
+#         relation_type = relation.relation_type
         
-        if relation_type not in tutors_by_relation:
+#         if relation_type not in tutors_by_relation:
             
-            tutors_by_relation[relation_type] = []
+#             tutors_by_relation[relation_type] = []
             
-        tutors_by_relation[relation_type].append(tutor)
+#         tutors_by_relation[relation_type].append(tutor)
 
-    result["tutors"] = tutors_by_relation
+#     result["tutors"] = tutors_by_relation
 
-    return result
-
-
-@router.get("/tutors/")
-def read_tutors(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    tutors = db.query(Tutors).offset(skip).limit(limit).all()
-    return tutors
+#     return result
 
 
-@router.get("/tutor/{tutor_id}")
-def read_tutors(tutor_id: int, db: Session = Depends(get_db)):
-    tutors = db.query(Tutors).filter(Tutors.id_tutor == tutor_id).first()
-    return tutors
+# @router.get("/tutors/")
+# def read_tutors(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+#     tutors = db.query(Tutors).offset(skip).limit(limit).all()
+#     return tutors
+
+
+# @router.get("/tutor/{tutor_id}")
+# def read_tutors(tutor_id: int, db: Session = Depends(get_db)):
+#     tutors = db.query(Tutors).filter(Tutors.id_tutor == tutor_id).first()
+#     return tutors
 
 
 # @router.get("/types-relations-tutors-students/")
