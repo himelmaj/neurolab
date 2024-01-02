@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
 # from app.models import Student, Tutors, RelStudentTutors, TypeRelationTutorStudent
-from app.src.dashboard.schemas import StudentSchema, TutorSchema
+from app.src.dashboard.schemas import StudentSchema, TutorSchema, StudentBase, StudentIn, StudentOut
 from app.src.dashboard.models import Student, Tutor, TypeRelationTutorStudent
-from typing import List, Optional
+from typing import List, Optional, Annotated
 
 dashboard_router = APIRouter(
     prefix="/api/v1",
@@ -27,9 +27,13 @@ def read_students_tutors_by_student_id(student_id: int, db: Session = Depends(ge
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Student not found")
     return db_student_tutors
 
+async def common_parameters(skip: int = 0, limit: int = 100):
+    return {"skip": skip, "limit": limit}
+
+
 @dashboard_router.get("/students/")
-def read_students(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    db_students = db.query(Student).offset(skip).limit(limit).all()
+def read_students(commons: Annotated[dict, Depends(common_parameters)], db: Session = Depends(get_db)):
+    db_students = db.query(Student).offset(commons["skip"]).limit(commons["limit"]).all()
     if not db_students:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Students not found")
     return db_students
@@ -49,6 +53,20 @@ def read_student_by_name(name: str, db: Session = Depends(get_db)):
     if not student:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Student not found")
     return student
+
+
+@dashboard_router.post("/students", response_model=StudentIn, status_code=status.HTTP_201_CREATED)
+def create_student(student: StudentIn, db: Session = Depends(get_db)):
+    try:
+        db_student = Student(**student.model_dump())
+        db.add(db_student)
+        db.commit()
+        db.refresh(db_student)
+        return db_student
+    except Exception as e:
+        db.rollback()  # Revertir la transacción en caso de error
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
 
 # @dashboard_router.get("/students/{student_id}/tutors/")
 # def read_student_tutors(student_id: int, db: Session = Depends(get_db)):

@@ -1,3 +1,5 @@
+# db connection related stuff
+
 from decouple import config
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base

@@ -3,16 +3,24 @@ from typing import List, Optional
 from datetime import date
 
 class StudentBase(BaseModel):
-    student_id : int = Field(alias="id_student")
-    idalu : int = Field(alias="idalu")
-    first_name : str = Field(alias="first_name")
-    last_name : str = Field(alias="last_name")
-    date_of_birth : date = Field(alias="date_of_birth")
-    is_emancipated : bool = Field(alias="is_emancipated")
-    email : str = Field(alias="email")
-    nif : str = Field(alias="nif")
-    cip : str = Field(alias="cip")
-    
+    idalu: int = Field(alias="idalu")
+    first_name: str = Field(alias="first_name")
+    last_name: str = Field(alias="last_name")
+    date_of_birth: date = Field(alias="date_of_birth")
+    is_emancipated: bool = Field(alias="is_emancipated")
+    email: str = Field(alias="email")
+    nif: str = Field(alias="nif")
+    cip: str = Field(alias="cip")
+
+    class Config:
+        from_attributes = True
+
+class StudentIn(StudentBase):
+    pass
+
+class StudentOut(StudentBase):
+    student_id: int = Field(alias="id_student")
+
     class Config:
         from_attributes = True
         
@@ -27,8 +35,8 @@ class TutorBase(BaseModel):
     class Config:
         from_attributes = True
     
-class StudentSchema(StudentBase):
+class StudentSchema(StudentOut):
     tutors : List[TutorBase]
 
 class TutorSchema(TutorBase):
-    students : List[StudentBase]
+    students : List[StudentOut]

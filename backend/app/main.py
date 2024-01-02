@@ -1,14 +1,10 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
-import os
 from decouple import config
-from app.routes import router
-from app.src.dashboard.router import dashboard_router
+# from app.router import router
+from app.src.students.router import router as students_router
 
 app = FastAPI(
-    prefix="/api",
-    tags=["api"],
     title="Neurolab Monlau API",
     description="Neurolab API",
 )
@@ -26,12 +22,10 @@ app.add_middleware(
     allow_headers=['*']
 )
 
-@app.api_route("/", response_class=HTMLResponse, status_code=status.HTTP_200_OK, methods=['GET', 'HEAD'])
+@app.get("/")
 async def load_root():
-    templates_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "templates")
-    with open(os.path.join(templates_dir, "index.html"), "r") as file:
-        return file.read()
+    return {"message": "Welcome to Neurolab API"}
     
-app.include_router(router)
-app.include_router(dashboard_router)
+# app.include_router(router)
+app.include_router(students_router)
 

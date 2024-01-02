@@ -11,6 +11,7 @@ rel_students_tutors = Table('rel_students_tutors', Base.metadata,
 
 class Student(Base):
     __tablename__ = "students"
+    
     id_student = Column(INTEGER, primary_key=True, index=True, autoincrement=True, nullable=False)
     idalu = Column(INTEGER(10), nullable=False)
     first_name = Column(VARCHAR(30), nullable=False, index=True)
@@ -24,6 +25,7 @@ class Student(Base):
     
 class Tutor(Base):
     __tablename__ = "tutors"
+    
     id_tutor = Column(INTEGER, primary_key=True, index=True, autoincrement=True, nullable=False)
     id_relation = Column(INTEGER, ForeignKey('type_relation_tutor_student.id_relation'), index=True, nullable=False)
     first_name = Column(VARCHAR(30), nullable=False)
