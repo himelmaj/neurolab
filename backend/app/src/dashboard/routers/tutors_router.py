@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query, status, Path
 from sqlmodel import Session
 from app.database import get_session
 from ..models.models import TutorRead, TutorCreate, TutorReadWithStudents
-from ..service import tutors_service as service
+from ..service import tutor_service as service
 from app.utils import Page
 
 router = APIRouter(

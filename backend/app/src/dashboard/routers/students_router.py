@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query, status, Path
 from sqlmodel import Session
 from ..models.models import StudentRead, StudentCreate, StudentUpdate, StudentReadWithTutors
 from app.database import init_db, get_session
-from ..service import students_service as service
+from ..service import student_service as service
 from app.utils import Page
 
 
