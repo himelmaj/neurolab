@@ -1,17 +1,13 @@
-# db connection related stuff
-
 from decouple import config
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlmodel import Session, create_engine, SQLModel
 
-engine = create_engine(config('DB2'))
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+db_url = config('DB3')
+connect_args = {"check_same_thread": False}
+engine = create_engine(db_url, echo=True)
 
-def get_db() -> Session:
-    db = SessionLocal()
-    try:
-        return db
-    finally:
-        db.close()
+def init_db():
+    SQLModel.metadata.create_all(engine)
+
+def get_session():
+    with Session(engine) as session:
+        yield session
