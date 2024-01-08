@@ -55,3 +55,13 @@ def delete_student_or_404(session: Session, student_id: int):
     session.delete(student)
     session.commit()
     return student
+
+def get_student_by_name_or_404(session: Session, q: str):
+    students = paginate(session, select(Student).where(  Student.first_name.contains(q) 
+                                                       | Student.last_name1.contains(q) 
+                                                       | Student.last_name2.contains(q)))
+    
+    if not students:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Student not found")
+    
+    return students

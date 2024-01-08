@@ -1,22 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
+from fastapi_pagination import add_pagination
 from decouple import config
+from .utils import startup, shutdown, Lifespans
 from .src.dashboard.routers.students_router import router as students_router
 from .src.dashboard.routers.tutors_router import router as tutors_router
-from fastapi_pagination import add_pagination
-from .database import init_db
+from .src.dashboard.routers.courses_router import router as courses_router
+from .src.graphql.graphql import graphql_app
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    init_db()
-    yield
 
 
 app = FastAPI(
     title="Neurolab Monlau API",
     description="Neurolab API",
-    lifespan=lifespan,
+    lifespan=Lifespans([startup, shutdown]),
 )
 
 
@@ -37,11 +34,10 @@ app.add_middleware(
 def read_main():
     return {"message": "Welcome to Neurolab API"}
 
-# @app.on_event("startup")
-# def on_startup():
-#     init_db()
-
 app.include_router(students_router)
 app.include_router(tutors_router)
+app.include_router(courses_router)
+app.include_router(graphql_app, prefix="/graphql")
+
 add_pagination(app)
 

@@ -44,3 +44,16 @@ def delete_tutor_or_404(session: Session, tutor_id: int):
     session.delete(tutor)
     session.commit()
     return tutor
+
+def get_tutor_by_name_or_404(session: Session, q: str):
+    tutors = paginate(session, select(Tutor).where(   Tutor.first_name.contains(q) 
+                                                    | Tutor.last_name1.contains(q)
+                                                    | Tutor.last_name2.contains(q) 
+                                                    | Tutor.email.contains(q) 
+                                                    | Tutor.phone.contains(q) 
+    ))
+    
+    if not tutors:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tutors not found")
+    
+    return tutors

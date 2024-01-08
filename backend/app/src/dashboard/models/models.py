@@ -7,9 +7,16 @@ class StudentTutor(SQLModel, table=True):
     id_student: Optional[int] = Field(default=None, primary_key=True, index=True, foreign_key="student.id_student")
     id_tutor: Optional[int] = Field(default=None, primary_key=True, index=True, foreign_key="tutor.id_tutor")
    
+   
+    """
+    
+    Student models
+    
+    """
     
 class StudentBase(SQLModel):
     id_user: Optional[int] = Field(default=None, index=True)
+    id_course: Optional[int] = Field(default=None, foreign_key="course.id_course", index=True)
     first_name: str = Field(default=None, max_length=30)
     last_name1: str = Field(default=None, max_length=50)
     last_name2: Optional[str] = Field(default=None, max_length=50)
@@ -19,14 +26,15 @@ class StudentBase(SQLModel):
     email: str = Field(default=None, max_length=255)
     dni: str = Field(default=None, max_length=9)
     id_address: Optional[int] = Field(default=None, index=True)
-    created_by: Optional[int] = Field(default=None, index=True)
-    updated_by: Optional[int] = Field(default=None, index=True)
-    created_at: Optional[datetime] = datetime.now()
-    updated_at: Optional[datetime] = datetime.now()
+    created_by: Optional[int] = Field(default=None)
+    updated_by: Optional[int] = Field(default=None)
+    created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
     
 class Student(StudentBase, table=True):
     id_student: Optional[int] = Field(default=None, primary_key=True, index=True)
     tutors: List["Tutor"] = Relationship(back_populates="students", link_model=StudentTutor)
+    course: Optional["Course"] = Relationship(back_populates="students")
     
 class StudentRead(StudentBase):
     id_student: int
@@ -36,6 +44,7 @@ class StudentCreate(StudentBase):
 
 class StudentUpdate(SQLModel):
     id_user: Optional[int] = None
+    id_course: Optional[int] = None
     first_name: Optional[str] = None
     last_name1: Optional[str] = None
     last_name2: Optional[str] = None
@@ -48,7 +57,13 @@ class StudentUpdate(SQLModel):
     created_by: Optional[int] = None
     updated_by: Optional[int] = None
     created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    updated_at: datetime = None
+    
+    """
+    
+    Tutor models
+    
+    """
 
 class TutorBase(SQLModel):
     id_user: Optional[int] = Field(default=None, index=True)
@@ -60,8 +75,8 @@ class TutorBase(SQLModel):
     email: str = Field(default=None, max_length=255)
     created_by: Optional[int] = Field(default=None, index=True)
     updated_by: Optional[int] = Field(default=None, index=True)
-    created_at: Optional[datetime] = datetime.now()
-    updated_at: Optional[datetime] = datetime.now()
+    created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
     
 class Tutor(TutorBase, table=True):
     id_tutor: Optional[int] = Field(default=None, primary_key=True, index=True)
@@ -85,9 +100,52 @@ class TutorUpdate(SQLModel):
     updated_by: Optional[int] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    
+    """
+    
+    Course models 
+    
+    """
+    
+class CourseBase(SQLModel):
+    course_name: str = Field(default=None, max_length=100)
+    created_by: Optional[int] = Field(default=None, index=True)
+    updated_by: Optional[int] = Field(default=None, index=True)
+    created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    
+class Course(CourseBase, table=True):
+    id_course: Optional[int] = Field(default=None, primary_key=True, index=True)
+    students: List["Student"] = Relationship(back_populates="course")
+    
+class CourseRead(CourseBase):
+    id_course: int
+
+class CourseCreate(CourseBase):
+    pass
+
+class CourseUpdate(SQLModel):
+    course_name: Optional[str] = None
+    created_by: Optional[int] = None
+    updated_by: Optional[int] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    """
+    
+    Custom models
+    
+    """
+
 
 class StudentReadWithTutors(StudentRead):
     tutors: List[TutorRead] = []
     
 class TutorReadWithStudents(TutorRead):
     students: List[StudentRead] = []
+
+class CourseReadWithStudents(CourseRead):
+    students: List[StudentRead] = []
+    
+class StudentReadWithCourse(StudentRead):
+    course: CourseRead = None

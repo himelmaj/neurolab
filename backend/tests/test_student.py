@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from app.main import app
+from backend.app.main import app
 
 client = TestClient(app)
 
@@ -14,6 +14,7 @@ def test_read_student():
     response = client.get("/students/1")
     assert response.status_code == 200
     assert response.json()["id_student"] == 1
+    assert response.json()["id_course"] == 1
     assert response.json()["id_user"] == None
     assert response.json()["first_name"] == "Alice"
     assert response.json()["last_name1"] == "Johnson"
